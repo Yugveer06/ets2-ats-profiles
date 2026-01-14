@@ -45,7 +45,6 @@ export default function ProfileViewer({ game }: { game: Game }) {
           }
           detail={
             <List.Item.Detail
-              markdown={`${profile.name}`}
               metadata={
                 <List.Item.Detail.Metadata>
                   <List.Item.Detail.Metadata.Label title="Name" text={profile.name} />
