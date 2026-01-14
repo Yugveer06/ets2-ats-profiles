@@ -65,7 +65,6 @@ export function isEncryptedSiiFile(filePath: string): boolean {
 export async function decryptSii(filePath: string): Promise<void> {
   // Check if already decrypted
   if (isSiiDecrypted(filePath)) {
-    console.log("File is already decrypted");
     return;
   }
 
