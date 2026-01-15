@@ -31,7 +31,7 @@
   "dependencies": {
     "@raycast/api": "^1.103.0",
     "@raycast/utils": "^2.2.1",
-    "sii-parse-ts": "^1.0.0"
+    "sii-parse-ts": "^1.1.0"
   },
   "devDependencies": {
     "@raycast/eslint-config": "^2.0.4",
