@@ -16,7 +16,6 @@ export default function ProfileViewer({ game }: { game: Game }) {
         profs.map(async (prof) => {
           try {
             const parsedSii = await parseSiiFileStreaming<ProfileSii>(path.join(prof.path, "profile.sii"));
-            console.log("Parsed", prof.name);
             return { ...prof, parsedData: parsedSii };
           } catch (error) {
             return prof;

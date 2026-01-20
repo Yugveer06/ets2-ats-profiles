@@ -79,8 +79,6 @@ export async function decryptSii(filePath: string): Promise<void> {
       encoding: "utf-8",
       stdio: "pipe",
     });
-
-    console.log("Successfully decrypted", filePath);
   } catch (error: unknown) {
     if (error && typeof error === "object" && "stderr" in error) {
       const execError = error as { stderr: string; message: string };
