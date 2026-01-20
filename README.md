@@ -3,5 +3,5 @@
 ## Credits
 
 Author: Yugveer Singh Wadzatia
-SII_Decrypt: https://github.com/Stearells/SII_Decrypt/releases
+SII Decrypt TypeScript: https://github.com/Trucky/sii-decrypt-ts
 Original Library: https://github.com/TheLazyTomcat/SII_Decrypt/

@@ -1,5 +1,4 @@
-import { environment } from "@raycast/api";
-import { execFileSync } from "node:child_process";
+import { SIIDecryptor } from "@trucky/sii-decrypt-ts";
 import fs from "node:fs";
 import path from "node:path";
 
@@ -58,7 +57,7 @@ export function isEncryptedSiiFile(filePath: string): boolean {
 }
 
 /**
- * Decrypts an SII file in place using SII_Decrypt.exe
+ * Decrypts an SII file in place using @trucky/sii-decrypt-ts
  *
  * @param filePath - Path to the SII file to decrypt
  */
@@ -68,48 +67,41 @@ export async function decryptSii(filePath: string): Promise<void> {
     return;
   }
 
-  const cliPath = path.join(environment.assetsPath, "SII_Decrypt.exe");
-
-  if (!fs.existsSync(cliPath)) {
-    throw new Error(`SII_Decrypt.exe not found at: ${cliPath}`);
-  }
-
   try {
-    execFileSync(cliPath, [filePath], {
-      encoding: "utf-8",
-      stdio: "pipe",
-    });
+    const result = SIIDecryptor.decrypt(filePath, true);
+
+    if (!result.success) {
+      throw new Error(result.error || "Decryption failed");
+    }
+
+    // Write the decrypted content back to the original file
+    fs.writeFileSync(filePath, result.data);
   } catch (error: unknown) {
-    if (error && typeof error === "object" && "stderr" in error) {
-      const execError = error as { stderr: string; message: string };
-      console.error("Decryption error:", execError.stderr || execError.message);
-      throw new Error(`Failed to decrypt: ${execError.stderr || execError.message}`);
+    if (error instanceof Error) {
+      console.error("Decryption error:", error.message);
+      throw new Error(`Failed to decrypt: ${error.message}`);
     }
     throw error;
   }
 }
 
 /**
- * Decrypts an encrypted SII file to a new file using SII_Decrypt.exe
+ * Decrypts an encrypted SII file to a new file using @trucky/sii-decrypt-ts
  *
  * @param siiFilePath - Path to the encrypted SII file
  * @param outputPath - Path where the decrypted file should be saved
  * @returns Path to the decrypted file
  */
 export async function decryptSiiToFile(siiFilePath: string, outputPath: string): Promise<string> {
-  const decryptorPath = path.join(environment.assetsPath, "SII_Decrypt.exe");
-
-  // Check if decryptor exists
-  if (!fs.existsSync(decryptorPath)) {
-    throw new Error("SII_Decrypt.exe not found in assets folder");
-  }
-
   try {
-    // Run the decryptor: SII_Decrypt.exe input_file output_file
-    execFileSync(decryptorPath, [siiFilePath, outputPath], {
-      encoding: "utf-8",
-      stdio: "pipe",
-    });
+    const result = SIIDecryptor.decrypt(siiFilePath, true);
+
+    if (!result.success) {
+      throw new Error(result.error || "Decryption failed");
+    }
+
+    // Write the decrypted content to the output file
+    fs.writeFileSync(outputPath, result.data);
 
     // Check if decrypted file was created
     if (!fs.existsSync(outputPath)) {
@@ -118,10 +110,6 @@ export async function decryptSiiToFile(siiFilePath: string, outputPath: string):
 
     return outputPath;
   } catch (error: unknown) {
-    if (error && typeof error === "object" && "stderr" in error) {
-      const execError = error as { stderr: string; message: string };
-      throw new Error(`Decryption failed: ${execError.stderr || execError.message}`);
-    }
     throw new Error(`Decryption failed: ${error instanceof Error ? error.message : "Unknown error"}`);
   }
 }
