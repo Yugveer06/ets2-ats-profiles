@@ -144,3 +144,16 @@ export function hexToString(hex: string): string | null {
 
   return new TextDecoder().decode(bytes);
 }
+
+/**
+ * Converts regular string to hex string
+ *
+ * @param str - String to convert
+ * @returns Hex encoded string
+ */
+export function stringToHex(str: string): string {
+  const bytes = new TextEncoder().encode(str);
+  return Array.from(bytes)
+    .map((byte) => byte.toString(16).padStart(2, "0"))
+    .join("");
+}
